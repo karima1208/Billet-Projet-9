@@ -33,13 +33,15 @@ describe("Given I am connected as an employee", () => {
     });
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills });
+      // 🔥 1️⃣ Récupère TOUS les <td> qui ont data-testid="bill-date"
       const dates = screen
-        .getAllByText(
-          /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i
-        )
-        .map((a) => a.innerHTML);
-      const antiChrono = (a, b) => (a < b ? 1 : -1);
-      const datesSorted = [...dates].sort(antiChrono);
+        .getAllByTestId("bill-date")
+        .map((dateEl) => dateEl.getAttribute("data-date-iso")); // 👈 récupère la vraie date ISO
+
+      // 🔥 2️⃣ Trie du plus récent au plus ancien
+      const datesSorted = [...dates].sort((a, b) => new Date(b) - new Date(a));
+
+      // 🔥 3️⃣ Vérifie si l'ordre dans le DOM est déjà trié
       expect(dates).toEqual(datesSorted);
     });
   });

@@ -52,6 +52,7 @@ export default class {
               return {
                 ...doc,
                 date: formatDate(doc.date),
+                rawDate: doc.date, // 👈 on garde la vraie date ISO ici
                 status: formatStatus(doc.status),
               };
             } catch (e) {
