@@ -44,7 +44,7 @@ export default class {
           // 1️⃣ On trie D'ABORD par date décroissante (sans formatDate)
           const sortedBills = snapshot
             .filter((doc) => doc.date) // on garde que ceux qui ont une date valide
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
 
           // 2️⃣ Ensuite, on formate proprement les dates et statuts
           const bills = sortedBills.map((doc) => {
