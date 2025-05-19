@@ -19,23 +19,22 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     e.preventDefault();
-    const fileInput = this.document.querySelector(`input[data-testid="file"]`);
-    const file = fileInput.files[0];
-    const filePath = fileInput.value.split(/\\/g);
-    const fileName = filePath[filePath.length - 1];
-
-    // 🔍 Vérification du type de fichier :
-    const validExtensions = ["jpg", "jpeg", "png"];
-    const fileExtension = fileName.split(".").pop().toLowerCase();
-
-    if (!validExtensions.includes(fileExtension)) {
-      alert(
-        "Format invalide : veuillez choisir une image (.jpg, .jpeg ou .png)"
-      );
-      fileInput.value = ""; // 🔄 Vide le champ fichier
-      return;
+    const input = this.document.querySelector(`input[data-testid="file"]`);
+    const file = e.target.files[0];
+    const fileName = file.name;
+    // ce que j'ai ajouté comme solution
+    const btnSubmit = this.document.getElementById("btn-send-bill");
+    if (
+      fileName.split(".")[1] === "png" ||
+      fileName.split(".")[1] === "jpg" ||
+      fileName.split(".")[1] === "jpeg"
+    ) {
+      btnSubmit.removeAttribute("disabled");
+    } else {
+      alert("format du fichier choisi est invalide");
+      btnSubmit.setAttribute("disabled", true);
+      input.value = "";
     }
-
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
     formData.append("file", file);
@@ -50,7 +49,6 @@ export default class NewBill {
         },
       })
       .then(({ fileUrl, key }) => {
-        console.log(fileUrl);
         this.billId = key;
         this.fileUrl = fileUrl;
         this.fileName = fileName;
@@ -59,10 +57,6 @@ export default class NewBill {
   };
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(
-      'e.target.querySelector(`input[data-testid="datepicker"]`).value',
-      e.target.querySelector(`input[data-testid="datepicker"]`).value
-    );
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
       email,
